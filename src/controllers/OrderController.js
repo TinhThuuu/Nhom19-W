@@ -1,89 +1,126 @@
 const OrderService = require('../services/OrderService')
 
+// ================= CREATE ORDER =================
 const createOrder = async (req, res) => {
-    try { 
-        const { paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone } = req.body
-        if (!paymentMethod || !itemsPrice || !shippingPrice || !totalPrice || !fullName || !address || !city || !phone) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The input is required'
-            })
-        }
-        const response = await OrderService.createOrder(req.body)
+    try {
+        const {
+            paymentMethod,
+            itemsPrice,
+            shippingPrice,
+            totalPrice,
+            fullName,
+            address,
+            city,
+            phone,
+            orderItems
+        } = req.body
+
+        if (
+            !paymentMethod ||
+            itemsPrice === undefined ||
+            shippingPrice === undefined ||
+            totalPrice === undefined ||
+            !fullName ||
+            !address ||
+            !city ||
+            !phone ||
+            !Array.isArray(orderItems) ||
+            orderItems.length === 0
+            ) {
+            return res.status(400).json({
+                status: "ERR",
+                message: "Missing or invalid required fields",
+            });
+            }
+
+        const userId = req.user.id
+        const email = req.user.email
+
+        const response = await OrderService.createOrder({
+            ...req.body,
+            user: userId,
+            email
+        })
+
         return res.status(200).json(response)
     } catch (e) {
-        return res.status(404).json({
-            message: e
+        console.log('CREATE ORDER ERROR:', e)
+        return res.status(500).json({
+            
+            status: 'ERR',
+            message: e.message
         })
     }
 }
 
+// ================= GET ALL ORDER BY USER =================
 const getAllOrderDetails = async (req, res) => {
     try {
-        const userId = req.params.id
-        if (!userId) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The userId is required'
-            })
-        }
+        const userId = req.user.id
+
         const response = await OrderService.getAllOrderDetails(userId)
         return res.status(200).json(response)
     } catch (e) {
-        // console.log(e)
-        return res.status(404).json({
-            message: e
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message
         })
     }
 }
 
+// ================= GET ORDER DETAILS =================
 const getDetailsOrder = async (req, res) => {
     try {
         const orderId = req.params.id
+
         if (!orderId) {
-            return res.status(200).json({
+            return res.status(400).json({
                 status: 'ERR',
-                message: 'The userId is required'
+                message: 'OrderId is required'
             })
         }
+
         const response = await OrderService.getOrderDetails(orderId)
         return res.status(200).json(response)
     } catch (e) {
-        // console.log(e)
-        return res.status(404).json({
-            message: e
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message
         })
     }
 }
 
+// ================= CANCEL ORDER =================
 const cancelOrderDetails = async (req, res) => {
     try {
-        const data= req.body.orderItems
-        const orderId= req.body.orderId
+        const { orderItems, orderId } = req.body
+
         if (!orderId) {
-            return res.status(200).json({
+            return res.status(400).json({
                 status: 'ERR',
-                message: 'The orderId is required'
+                message: 'OrderId is required'
             })
         }
-        const response = await OrderService.cancelOrderDetails(orderId, data)
+
+        const response = await OrderService.cancelOrderDetails(orderId, orderItems)
         return res.status(200).json(response)
     } catch (e) {
-        // console.log(e)
-        return res.status(404).json({
-            message: e
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message
         })
     }
 }
 
+// ================= ADMIN: GET ALL ORDER =================
 const getAllOrder = async (req, res) => {
     try {
         const data = await OrderService.getAllOrder()
         return res.status(200).json(data)
     } catch (e) {
-        // console.log(e)
-        return res.status(404).json({
-            message: e
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message
         })
     }
 }

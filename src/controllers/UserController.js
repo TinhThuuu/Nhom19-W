@@ -57,10 +57,11 @@ const loginUser = async (req, res) => {
         })
         return res.status(200).json({...newReponse, refresh_token})
     } catch (e) {
-        return res.status(404).json({
-            message: e
-        })
-    }
+    return res.status(500).json({ 
+        status: 'ERR',
+        message: e.message || e 
+    })
+}
 }
 
 const updateUser = async (req, res) => {
