@@ -2,7 +2,8 @@ import {Checkbox, Form } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { CustomCheckbox, WrapperCountOrder, WrapperInfo, WrapperItemOrder, WrapperLeft, WrapperListOrder, WrapperRight, WrapperStyleHeader, WrapperStyleHeaderDilivery, WrapperTotal } from './style';
 import { DeleteOutlined, MinusOutlined, PlusOutlined} from '@ant-design/icons'
-
+import { AiFillDelete } from "react-icons/ai";
+import { formater } from '../../formatter';
 import { WrapperInputNumber } from '../../components/ProductDetailsComponent/style';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
 import { useDispatch, useSelector } from 'react-redux';
@@ -103,23 +104,20 @@ const OrderPage = () => {
   },[order])
 
   const priceDiscountMemo = useMemo(() => {
-    const result = order?.orderItemsSlected?.reduce((total, cur) => {
-      const totalDiscount = cur.discount ? cur.discount : 0
-      return total + (priceMemo * (totalDiscount  * cur.amount) / 100)
-    },0)
-    if(Number(result)){
-      return result
-    }
-    return 0
-  },[order])
+  const result = order?.orderItemsSlected?.reduce((total, cur) => {
+    const discount = cur.discount || 0
+    return total + (cur.price * cur.amount * discount) / 100
+  }, 0)
+  return result
+}, [order])
 
   const diliveryPriceMemo = useMemo(() => {
-    if(priceMemo >= 20000 && priceMemo < 500000){
-      return 10000
-    }else if(priceMemo >= 500000 || order?.orderItemsSlected?.length === 0) {
+    if(priceMemo >= 500000 && priceMemo < 3000000) {
+      return 15000
+    }else if(priceMemo >= 3000000 || order?.orderItemsSlected?.length === 0) {
       return 0
     } else {
-      return 20000
+      return 30000
     }
   },[priceMemo])
 
@@ -187,22 +185,22 @@ const OrderPage = () => {
   }
   const itemsDelivery = [
     {
-      title: '20.000 VND',
-      description: 'Dưới 200.000 VND',
+      title: `${formater(30000)}`,
+      description: `Dưới ${formater(500000)}`,
     },
     {
-      title: '10.000 VND',
-      description: 'Từ 200.000 VND đến dưới 500.000 VND',
+      title: `${formater(15000)}`,
+      description: `Từ ${formater(500000)} đến dưới ${formater(2999999+1)}`,
     },
     {
       title: 'Free ship',
-      description : 'Trên 500.000 VND',
+      description : `Trên ${formater(3000000 )}`,
     },
   ]
   return (
     <div style={{background: '#f5f5fa', with: '100%', height: '100vh'}}>
       <div style={{height: '100%', width: '1270px', margin: '0 auto'}}>
-        <h3 style={{fontWeight: 'bold'}}>Giỏ hàng</h3>
+        <h3 style={{marginTop: '10px', fontSize: '14px', fontWeight: 'bold'}}>Giỏ hàng</h3>
         <div style={{ display: 'flex', justifyContent: 'center'}}>
           <WrapperLeft>
             <h4>Phí giao hàng</h4>
@@ -220,7 +218,7 @@ const OrderPage = () => {
                   <span>Đơn giá</span>
                   <span>Số lượng</span>
                   <span>Thành tiền</span>
-                  <DeleteOutlined style={{cursor: 'pointer'}} onClick={handleRemoveAllOrder}/>
+                  <AiFillDelete style={{fontSize: '20px', cursor: 'pointer'}} onClick={handleRemoveAllOrder}/>
                 </div>
             </WrapperStyleHeader>
             <WrapperListOrder>
@@ -251,7 +249,7 @@ const OrderPage = () => {
                     </button>
                   </WrapperCountOrder>
                   <span style={{color: 'rgb(255, 66, 78)', fontSize: '13px', fontWeight: 500}}>{convertPrice(order?.price * order?.amount)}</span>
-                  <DeleteOutlined style={{cursor: 'pointer'}} onClick={() => handleDeleteOrder(order?.product)}/>
+                  <AiFillDelete style={{fontSize: '20px', cursor: 'pointer'}} onClick={() => handleDeleteOrder(order?.product)}/>
                 </div>
               </WrapperItemOrder>
                 )
@@ -311,7 +309,6 @@ const OrderPage = () => {
             name="basic"
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
-            // onFinish={onUpdateUser}
             autoComplete="on"
             form={form}
           >

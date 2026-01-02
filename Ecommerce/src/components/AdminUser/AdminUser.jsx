@@ -15,7 +15,8 @@ import { useRef } from 'react'
 import { useMutationHooks } from '../../hooks/useMutationHook'
 import * as UserService from '../../services/UserService'
 import { useIsFetching, useQuery, useQueryClient } from '@tanstack/react-query'
-import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons'
+import { EditOutlined, SearchOutlined } from '@ant-design/icons'
+import { AiFillDelete } from 'react-icons/ai'
 
 const AdminUser = () => {
   const [rowSelected, setRowSelected] = useState('')
@@ -119,8 +120,8 @@ const AdminUser = () => {
   const renderAction = () => {
     return (
       <div>
-        <DeleteOutlined style={{ color: 'red', fontSize: '30px', cursor: 'pointer' }} onClick={() => setIsModalOpenDelete(true)} />
-        <EditOutlined style={{ color: 'orange', fontSize: '30px', cursor: 'pointer' }} onClick={handleDetailsProduct} />
+        <AiFillDelete style={{ color: 'gray', fontSize: '22px', cursor: 'pointer', marginRight: '4px' }} onClick={() => setIsModalOpenDelete(true)} />
+        <EditOutlined style={{ color: 'green', fontSize: '21px', cursor: 'pointer' }} onClick={handleDetailsProduct} />
       </div>
     )
   }

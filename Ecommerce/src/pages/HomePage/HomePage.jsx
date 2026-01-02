@@ -79,7 +79,7 @@ const HomePage = () => {
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
             <WrapperButtonMore
               textbutton={isPreviousData ? 'Load more' : "Xem thêm"} type="outline" styleButton={{
-                border: `1px solid ${products?.total === products?.data?.length ? '#f5f5f5' : '#9255FD'}`, color: `${products?.total === products?.data?.length ? '#f5f5f5' : '#9255FD'}`,
+                border: `1px solid ${products?.total === products?.data?.length ? '#f5f5f5' : '#F97316'}`, color: `${products?.total === products?.data?.length ? '#f5f5f5' : '##F97316'}`,
                 width: '240px', height: '38px', borderRadius: '4px'
               }}
               disabled={products?.total === products?.data?.length || products?.totalPage === 1}

@@ -88,7 +88,7 @@ const MyOrderPage = () => {
     <Loading isLoading={isLoading || isLoadingCancel}>
       <WrapperContainer>
         <div style={{height: '100%', width: '1270px', margin: '0 auto'}}>
-          <h4>Đơn hàng của tôi</h4>
+          <h4 style={{fontSize: '14px'}}>Đơn hàng của tôi</h4>
           <WrapperListOrder>
             {data?.map((order) => {
               return (
@@ -97,11 +97,11 @@ const MyOrderPage = () => {
                     <span style={{fontSize: '14px', fontWeight: 'bold'}}>Trạng thái</span>
                     <div>
                       <span style={{color: 'rgb(255, 66, 78)'}}>Giao hàng: </span>
-                      <span style={{color: 'rgb(90, 32, 193)', fontWeight: 'bold'}}>{`${order.isDelivered ? 'Đã giao hàng': 'Chưa giao hàng'}`}</span>
+                      <span style={{color: 'black', fontWeight: 'bold'}}>{`${order.isDelivered ? 'Đã giao hàng': 'Chưa giao hàng'}`}</span>
                     </div>
                     <div>
                       <span style={{color: 'rgb(255, 66, 78)'}}>Thanh toán: </span>
-                      <span style={{color: 'rgb(90, 32, 193)', fontWeight: 'bold'}}>{`${order.isPaid ? 'Đã thanh toán': 'Chưa thanh toán'}`}</span>
+                      <span style={{color: 'black', fontWeight: 'bold'}}>{`${order.isPaid ? 'Đã thanh toán': 'Chưa thanh toán'}`}</span>
                     </div>
                   </WrapperStatus>
                   {renderProduct(order?.orderItems)}
@@ -118,11 +118,11 @@ const MyOrderPage = () => {
                         size={40}
                         styleButton={{
                             height: '36px',
-                            border: '1px solid #9255FD',
+                            border: '1px solid #FB923C',
                             borderRadius: '4px'
                         }}
                         textbutton={'Hủy đơn hàng'}
-                        styleTextButton={{ color: '#9255FD', fontSize: '14px' }}
+                        styleTextButton={{ color: '#FB923C', fontSize: '14px' }}
                       >
                       </ButtonComponent>
                       <ButtonComponent
@@ -130,11 +130,11 @@ const MyOrderPage = () => {
                         size={40}
                         styleButton={{
                             height: '36px',
-                            border: '1px solid #9255FD',
+                            border: '1px solid #FB923C',
                             borderRadius: '4px'
                         }}
                         textbutton={'Xem chi tiết'}
-                        styleTextButton={{ color: '#9255FD', fontSize: '14px' }}
+                        styleTextButton={{ color: '#FB923C', fontSize: '14px' }}
                       >
                       </ButtonComponent>
                     </div>

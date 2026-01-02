@@ -26,23 +26,20 @@ const SignInPage = () => {
 
   useEffect(() => {
     if (isSuccess && data?.access_token) {
-      //  LƯU TOKEN DẠNG STRING
       localStorage.setItem('access_token', data.access_token)
       localStorage.setItem('refresh_token', data.refresh_token)
 
-      // decode access token
       const decoded = jwt_decode(data.access_token)
       if (decoded?.id) {
         handleGetDetailsUser(decoded.id, data.access_token)
       }
 
-      // redirect
       navigate(location?.state || '/')
     }
   }, [isSuccess])
 
   const handleGetDetailsUser = async (id, token) => {
-    const refreshToken = localStorage.getItem('refresh_token') // ❌ KHÔNG JSON.parse
+    const refreshToken = localStorage.getItem('refresh_token') 
     const res = await UserService.getDetailsUser(id, token)
 
     dispatch(
@@ -65,7 +62,7 @@ const SignInPage = () => {
           <h1>Xin chào</h1>
           <p>Đăng nhập vào tài khoản</p>
 
-          <InputForm placeholder="abc@gmail.com" value={email} onChange={setEmail} />
+          <InputForm placeholder="exp@gmail.com" value={email} onChange={setEmail} />
 
           <div style={{ position: 'relative' }}>
             <span
@@ -109,7 +106,7 @@ const SignInPage = () => {
 
         <WrapperContainerRight>
           <Image src={imageLogo} preview={false} height="203px" width="203px" />
-          <h4>Hãy đến với DT SHOP</h4>
+          <h4>DT SHOP xin chào!</h4>
         </WrapperContainerRight>
       </div>
     </div>

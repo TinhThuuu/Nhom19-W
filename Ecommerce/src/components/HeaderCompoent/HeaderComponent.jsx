@@ -80,10 +80,10 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
   }
 
   return (
-    <div style={{  heiht: '100%', width: '100%', display: 'flex',background: '#9255FD', justifyContent: 'center' }}>
+    <div style={{  heiht: '100%', width: '100%', display: 'flex',background: 'linear-gradient(135deg, #f97316, #ef4444)', justifyContent: 'center' }}>
       <WrapperHeader style={{ justifyContent: isHiddenSearch && isHiddenSearch ? 'space-between' : 'unset' }}>
         <Col span={5}>
-          <WrapperTextHeader to='/'>ComputerShop</WrapperTextHeader>
+          <WrapperTextHeader to='/'>DT Shop</WrapperTextHeader>
         </Col>
         {!isHiddenSearch && (
           <Col span={11}>
@@ -91,9 +91,15 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
               size="large"
               bordered={false}
               textbutton="Tìm kiếm"
-              placeholder="input search text"
+              placeholder="Bạn cần tìm gì?"
               onChange={onSearch}
-              backgroundColorButton="#5a20c1"
+              backgroundColorButton="#FB923C"
+              style={{ marginLeft: '10px',
+                border: '1px solid #FB923C', 
+                borderRadius: '8px', 
+                backgroundColor: '#fff',       
+                overflow: 'hidden'
+               }}
             />
           </Col>
         )}

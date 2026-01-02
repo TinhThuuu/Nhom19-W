@@ -1,67 +1,92 @@
 import React from 'react'
 import { Lable, WrapperInfo, WrapperContainer, WrapperValue, WrapperCountOrder, WrapperItemOrder, WrapperItemOrderInfo } from './style';
 import Loading from '../../components/LoadingComponent/Loading';
-import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { orderContant } from '../../contant';
 import { convertPrice } from '../../utils';
 
-
 const OrderSucess = () => {
   const location = useLocation()
-  const {state} = location
+  const { state } = location
+
   return (
-    <div style={{background: '#f5f5fa', with: '100%', height: '100vh'}}>
+    <div style={{ background: '#f5f5fa', width: '100%', minHeight: '100vh', paddingBottom: '20px' }}>
       <Loading isLoading={false}>
-        <div style={{height: '100%', width: '1270px', margin: '0 auto'}}>
-          <h3>Đơn hàng đặt thành công</h3>
-          <div style={{ display: 'flex', justifyContent: 'center'}}>
-            <WrapperContainer>
-              <WrapperInfo>
-                <div>
-                  <Lable>Phương thức giao hàng</Lable>
-                    <WrapperValue>
-                      <span style={{color: '#ea8500', fontWeight: 'bold'}}>{orderContant.delivery[state?.delivery]}</span> Giao hàng tiết kiệm
-                    </WrapperValue>
-                </div>
-              </WrapperInfo>
-              <WrapperInfo>
-                <div>
-                  <Lable>Phương thức thanh toán</Lable>
-                
+        <div style={{ width: '1270px', margin: '0 auto' }}>
+          <h3 style={{ fontSize: '16px', fontWeight: '500', padding: '15px 0' }}>Đơn đặt hàng</h3>
+          
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <WrapperContainer style={{ width: '100%', background: '#fff', padding: '20px', borderRadius: '4px' }}>
+              
+              {/* PHẦN THÔNG TIN VẬN CHUYỂN & THANH TOÁN */}
+              <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+                <WrapperInfo style={{ flex: 1, padding: '15px', border: '1px solid #eee', borderRadius: '8px', background: '#fafafa' }}>
+                  <Lable style={{ marginBottom: '10px', display: 'block', fontWeight: 'bold' }}>Phương thức giao hàng</Lable>
+                  <WrapperValue>
+                    <span style={{ color: '#ea8500', fontWeight: 'bold' }}>
+                      {orderContant.delivery[state?.delivery]}
+                    </span> Giao hàng tiết kiệm
+                  </WrapperValue>
+                </WrapperInfo>
+
+                <WrapperInfo style={{ flex: 1, padding: '15px', border: '1px solid #eee', borderRadius: '8px', background: '#fafafa' }}>
+                  <Lable style={{ marginBottom: '10px', display: 'block', fontWeight: 'bold' }}>Phương thức thanh toán</Lable>
                   <WrapperValue>
                     {orderContant.payment[state?.payment]}
                   </WrapperValue>
-                </div>
-              </WrapperInfo>
-              <WrapperItemOrderInfo>
-                {state.orders?.map((order) => {
+                </WrapperInfo>
+              </div>
+
+              <WrapperItemOrderInfo style={{ borderTop: '1px solid #f0f0f0', paddingTop: '10px' }}>
+                {state?.orders?.map((order) => {
                   return (
-                    <WrapperItemOrder key={order?.name}>
-                      <div style={{width: '500px', display: 'flex', alignItems: 'center', gap: 4}}> 
-                        <img src={order.image} style={{width: '77px', height: '79px', objectFit: 'cover'}}/>
+                    <WrapperItemOrder key={order?.name} style={{ display: 'flex', alignItems: 'center', padding: '15px 0', borderBottom: '1px dotted #eee' }}>
+                      <div style={{ width: '500px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <img 
+                          src={order.image} 
+                          alt="product"
+                          style={{ width: '77px', height: '79px', objectFit: 'cover', border: '1px solid #eee', padding: '2px', borderRadius: '4px' }} 
+                        />
                         <div style={{
-                          width: 260,
+                          width: '350px',
                           overflow: 'hidden',
-                          textOverflow:'ellipsis',
-                          whiteSpace:'nowrap'
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          fontWeight: '500'
                         }}>{order?.name}</div>
                       </div>
-                      <div style={{flex: 1, display: 'flex', alignItems: 'center',gap: '10px'}}>
-                        <span>
-                          <span style={{ fontSize: '13px', color: '#242424' }}>Giá tiền: {convertPrice(order?.price)}</span>
-                        </span>
-                        <span>
-                          <span style={{ fontSize: '13px', color: '#242424' }}>Số lượng: {order?.amount}</span>
-                        </span>
+
+                      {/* Cột thông tin giá và số lượng: Căn lề thẳng hàng */}
+                      <div style={{ flex: 1, display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                        <div style={{ width: '150px', textAlign: 'center' }}>
+                          <span style={{ fontSize: '14px', color: '#242424' }}>Giá tiền: <strong>{convertPrice(order?.price)}</strong></span>
+                        </div>
+                        <div style={{ width: '100px', textAlign: 'center' }}>
+                          <span style={{ fontSize: '14px', color: '#242424' }}>Số lượng: <strong>{order?.amount}</strong></span>
+                        </div>
                       </div>
                     </WrapperItemOrder>
                   )
                 })}
               </WrapperItemOrderInfo>
-              <div>
-                <span style={{ fontSize: '16px', color: 'red' }}>Tổng tiền: {convertPrice(state?.totalPriceMemo)}</span>
+
+              {/* KHUNG TỔNG TIỀN TRỰC TIẾP */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginTop: '20px' }}>
+                <div style={{ 
+                  width: '320px', 
+                  border: '1px solid #ff424e', 
+                  padding: '15px', 
+                  borderRadius: '12px', 
+                  background: '#fff5f5', /* Nền hồng nhạt cho nổi bật */
+                  textAlign: 'right'
+                }}>
+                  <div style={{ fontSize: '15px', color: '#555', marginBottom: '5px' }}>Tổng thanh toán</div>
+                  <div style={{ fontSize: '22px', color: '#ff424e', fontWeight: 'bold' }}>
+                    {convertPrice(state?.totalPriceMemo)}
+                  </div>
+                </div>
               </div>
+
             </WrapperContainer>
           </div>
         </div>

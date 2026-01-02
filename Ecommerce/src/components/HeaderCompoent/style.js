@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const WrapperHeader = styled(Row)`
-    background-color: var(--primary-color);
+    background-color: var(linear-gradient(135deg, #f97316, #ef4444));
     align-items: center;
     gap: 16px;
     flex-wrap: nowrap;

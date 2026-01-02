@@ -1,10 +1,10 @@
 export const orderContant = {
   delivery: {
     fast: 'FAST',
-    gojek: 'GO_JEK'
+    gojek: 'GHTK'
   },
   payment: {
-    later_money: 'Thanh toán tiền mặt khi nhận hàng',
+    later_money: 'Thanh toán khi nhận hàng',
     paypal: 'Thanh toán bằng paypal'
   }
 }

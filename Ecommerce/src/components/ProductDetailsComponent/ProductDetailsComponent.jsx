@@ -143,15 +143,15 @@ const ProductDetailsComponent = ({idProduct}) => {
                     <WrapperStyleNameProduct>{productDetails?.name}</WrapperStyleNameProduct>
                     <div>
                         <Rate allowHalf defaultValue={productDetails?.rating} value={productDetails?.rating} />
-                        <WrapperStyleTextSell> | Da ban 1000+</WrapperStyleTextSell>
+                        <WrapperStyleTextSell> | Đã bán {productDetails?.selled || 101}</WrapperStyleTextSell>
                     </div>
                     <WrapperPriceProduct>
                         <WrapperPriceTextProduct>{convertPrice(productDetails?.price)}</WrapperPriceTextProduct>
                     </WrapperPriceProduct>
                     <WrapperAddressProduct>
                         <span>Giao đến </span>
-                        <span className='address'>{user?.address}</span> -
-                        <span className='change-address'>Đổi địa chỉ</span>
+                        <span className='address'>{user?.address}</span> - 
+                        <span className='change-address'> Đổi địa chỉ</span>
                     </WrapperAddressProduct>
                     <LikeButtonComponent
                      dataHref={ process.env.REACT_APP_IS_LOCAL 
@@ -183,23 +183,12 @@ const ProductDetailsComponent = ({idProduct}) => {
                                     borderRadius: '4px'
                                 }}
                                 onClick={handleAddOrderProduct}
-                                textbutton={'Chọn mua'}
+                                textbutton={'Thêm vào giỏ hàng'}
                                 styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                             ></ButtonComponent>
-                            {errorLimitOrder && <div style={{color: 'red'}}>San pham het hang</div>}
+                            {errorLimitOrder && <div style={{color: 'red'}}>Sản phẩm hết hàng</div>}
                         </div>
-                        <ButtonComponent
-                            size={40}
-                            styleButton={{
-                                background: '#fff',
-                                height: '48px',
-                                width: '220px',
-                                border: '1px solid rgb(13, 92, 182)',
-                                borderRadius: '4px'
-                            }}
-                            textbutton={'Mua trả sau'}
-                            styleTextButton={{ color: 'rgb(13, 92, 182)', fontSize: '15px' }}
-                        ></ButtonComponent>
+                        
                     </div>
                 </Col>
                 <CommentComponent 
