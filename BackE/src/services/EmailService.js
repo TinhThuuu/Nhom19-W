@@ -9,7 +9,7 @@ const sendEmailCreateOrder = async (email, orderItems) => {
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
-    auth: {
+    auth: { 
       user: process.env.MAIL_ACCOUNT,
       pass: process.env.MAIL_PASSWORD,
     },
