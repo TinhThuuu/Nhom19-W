@@ -7,6 +7,7 @@ import * as UserService from './services/UserService'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateUser, resetUser } from './redux/slides/userSlide'
 import Loading from './components/LoadingComponent/Loading'
+import ChatbotWidget from './components/Chatbot/ChatbotWidget'
 
 function App() {
     const dispatch = useDispatch()
@@ -79,6 +80,7 @@ function App() {
     return (
         <Loading isLoading={isLoading}>
             <Router>
+                <ChatbotWidget />
                 <Routes>
                     {routes.map((route) => {
                         const Page = route.page

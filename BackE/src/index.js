@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const routes = require("./routes");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const ChatbotRouter = require("./routes/ChatbotRouter");
 
 dotenv.config();
 
@@ -18,6 +19,9 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
     
+// Register ChatbotRouter
+app.use("/api/chatbot", ChatbotRouter);
+
 // Routes
 routes(app);
 
