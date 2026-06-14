@@ -80,6 +80,19 @@ export const getAllOrder = async (access_token) => {
     return res.data
 }
 
+// ================= ADMIN: GET REVENUE STATISTICS =================
+export const getRevenueStatistics = async (access_token) => {
+    const res = await axiosJWT.get(
+        `${process.env.REACT_APP_API_URL}/order/revenue-statistics`,
+        {
+            headers: {
+                Authorization: `Bearer ${access_token}`,
+            },
+        }
+    )
+    return res.data
+}
+
 // ================= ADMIN UPDATE STATUS =================
 export const updateOrderStatus = async (id, data, access_token) => {
     const res = await axiosJWT.put(

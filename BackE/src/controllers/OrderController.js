@@ -236,6 +236,16 @@ const updateOrderStatus = async (req, res) => {
     }
 }
 
+// ================= ADMIN: REVENUE STATISTICS =================
+const revenueStatistics = async (req, res) => {
+    try {
+        const data = await OrderService.getRevenueStatistics()
+        return res.status(200).json(data)
+    } catch (e) {
+        return res.status(500).json({ status: 'ERR', message: e.message })
+    }
+}
+
 module.exports = {
     createOrder,
     getAllOrderDetails,
@@ -244,4 +254,5 @@ module.exports = {
     getAllOrder,
     createGuestOrder,
     updateOrderStatus
+    , revenueStatistics
 }

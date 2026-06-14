@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { getItem } from '../../utils';
 import { UserOutlined, AppstoreOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import HeaderComponent from '../../components/HeaderCompoent/HeaderComponent';
+import { BarChartOutlined } from '@ant-design/icons'
 import AdminUser from '../../components/AdminUser/AdminUser';
 import AdminProduct from '../../components/AdminProduct/AdminProduct';
 import OrderAdmin from '../../components/OrderAdmin/OrderAmin';
@@ -11,6 +12,7 @@ import * as ProductService from '../../services/ProductService'
 import * as UserService from '../../services/UserService'
 
 import CustomizedContent from './components/CustomizedContent';
+import AdminRevenue from '../../components/AdminRevenue/AdminRevenue'
 import { useSelector } from 'react-redux';
 import { useQueries } from '@tanstack/react-query';
 import { useMemo } from 'react';
@@ -23,6 +25,7 @@ const AdminPage = () => {
     getItem('Người dùng', 'users', <UserOutlined />),
     getItem('Sản phẩm', 'products', <AppstoreOutlined />),
     getItem('Đơn hàng', 'orders', <ShoppingCartOutlined />),
+    getItem('Thống kê doanh thu', 'revenue', <BarChartOutlined />),
     
   ];
 
@@ -85,6 +88,10 @@ const AdminPage = () => {
       case 'orders':
         return (
           <OrderAdmin />
+        )
+      case 'revenue':
+        return (
+          <AdminRevenue />
         )
       default:
         return <></>

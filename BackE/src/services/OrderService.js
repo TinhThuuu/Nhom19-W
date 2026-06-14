@@ -311,6 +311,96 @@ const updateOrderStatus = (id, data) => {
     })
 }
 
+const getRevenueStatistics = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allOrders = await Order.find().lean();
+
+            const totalOrders = allOrders.length;
+
+            // Exclude clearly cancelled/failed orders from revenue calculation
+            const validOrders = allOrders.filter(o => {
+                const ps = o.paymentStatus || '';
+                const st = o.status || '';
+                if (ps === 'failed' || ps === 'cancelled') return false;
+                if (st === 'cancelled') return false;
+                return true;
+            });
+
+            const eligibleOrders = validOrders.filter(o => (o.isPaid === true) || (o.paymentStatus === 'paid') || (o.isDelivered === true));
+
+            const totalRevenue = eligibleOrders.reduce((sum, o) => sum + (Number(o.totalPrice) || 0), 0);
+            const paidOrders = eligibleOrders.length;
+
+            const revenueByMonthMap = {};
+            const productMap = {};
+
+            const now = new Date();
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+            let todayRevenue = 0;
+            let thisMonthRevenue = 0;
+
+            eligibleOrders.forEach(o => {
+                const amount = Number(o.totalPrice) || 0;
+                const paidDate = o.paidAt ? new Date(o.paidAt) : new Date(o.createdAt);
+                const monthKey = `${String(paidDate.getMonth() + 1).padStart(2, '0')}/${paidDate.getFullYear()}`;
+
+                // Sum by month
+                if (!revenueByMonthMap[monthKey]) revenueByMonthMap[monthKey] = { revenue: 0, orders: 0 };
+                revenueByMonthMap[monthKey].revenue += amount;
+                revenueByMonthMap[monthKey].orders += 1;
+
+                // Today / this month
+                if (paidDate >= todayStart) todayRevenue += amount;
+                if (paidDate >= monthStart) thisMonthRevenue += amount;
+
+                // Top products
+                if (Array.isArray(o.orderItems)) {
+                    o.orderItems.forEach(item => {
+                        const pid = item.product || item._id || item.name || Math.random();
+                        const key = String(pid);
+                        const qty = Number(item.amount) || 0;
+                        const rev = (Number(item.price) || 0) * qty;
+                        if (!productMap[key]) {
+                            productMap[key] = { name: item.name || (item.product && item.product.name) || 'Unknown', quantity: 0, revenue: 0 };
+                        }
+                        productMap[key].quantity += qty;
+                        productMap[key].revenue += rev;
+                    })
+                }
+            })
+
+            const revenueByMonth = Object.keys(revenueByMonthMap).sort((a,b) => {
+                // sort by year/month ascending
+                const [am, ay] = a.split('/').map(x => Number(x));
+                const [bm, by] = b.split('/').map(x => Number(x));
+                if (ay === by) return am - bm;
+                return ay - by;
+            }).map(k => ({ month: k, revenue: revenueByMonthMap[k].revenue, orders: revenueByMonthMap[k].orders }));
+
+            const topSellingProducts = Object.keys(productMap).map(k => ({ name: productMap[k].name, quantity: productMap[k].quantity, revenue: productMap[k].revenue }))
+                .sort((a,b) => b.quantity - a.quantity).slice(0, 20);
+
+            return resolve({
+                status: 'OK',
+                data: {
+                    totalRevenue,
+                    totalOrders,
+                    paidOrders,
+                    todayRevenue,
+                    thisMonthRevenue,
+                    revenueByMonth,
+                    topSellingProducts
+                }
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createOrder,
     getAllOrderDetails,
@@ -318,4 +408,5 @@ module.exports = {
     cancelOrderDetails,
     getAllOrder,
     updateOrderStatus
+    , getRevenueStatistics
 }

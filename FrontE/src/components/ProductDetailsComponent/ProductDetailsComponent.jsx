@@ -1,6 +1,6 @@
 import { Col, Image, Rate, Row } from 'antd'
 import React from 'react'
-import imageProductSmall from '../../assets/images/imagesmall.webp'
+// thumbnails use product images from productDetails; do not use site logo as placeholder
 import { WrapperStyleImageSmall, WrapperStyleColImage, WrapperStyleNameProduct, WrapperStyleTextSell, WrapperPriceProduct, WrapperPriceTextProduct, WrapperAddressProduct, WrapperQualityProduct, WrapperInputNumber, WrapperBtnQualityProduct } from './style'
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
 import ButtonComponent from '../ButtonComponent/ButtonComponent'
@@ -44,18 +44,25 @@ const ProductDetailsComponent = ({idProduct}) => {
         }
     }
 
+    const { isLoading, data: productDetails, refetch } = useQuery(['product-details', idProduct], fetchGetDetailsProduct, { enabled : !!idProduct})
+
+    const images = productDetails?.images?.length ? productDetails.images : (productDetails?.image ? [productDetails.image] : [])
+    const mainImageSrc = productDetails?.image || (images.length ? images[0] : undefined)
+
     useEffect(() => {
         initFacebookSDK()
     }, [])
 
     useEffect(() => {
-        const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id) 
-        if((orderRedux?.amount + numProduct) <= orderRedux?.countInstock || (!orderRedux && productDetails?.countInStock > 0)) {
+        const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id)
+        const currentInCart = orderRedux?.amount || 0
+        const available = orderRedux?.countInstock ?? productDetails?.countInStock ?? 0
+        if ((currentInCart + numProduct) <= available) {
             setErrorLimitOrder(false)
-        } else if(productDetails?.countInStock === 0){
+        } else {
             setErrorLimitOrder(true)
         }
-    },[numProduct])
+    },[numProduct, productDetails, order])
 
     useEffect(() => {
         if(order.isSucessOrder) {
@@ -78,10 +85,11 @@ const ProductDetailsComponent = ({idProduct}) => {
         }
     }
 
-    const { isLoading, data: productDetails, refetch } = useQuery(['product-details', idProduct], fetchGetDetailsProduct, { enabled : !!idProduct})
     const handleAddOrderProduct = () => {
         const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id)
-        if((orderRedux?.amount + numProduct) <= orderRedux?.countInstock || (!orderRedux && productDetails?.countInStock > 0)) {
+        const currentInCart = orderRedux?.amount || 0
+        const available = orderRedux?.countInstock ?? productDetails?.countInStock ?? 0
+        if ((currentInCart + numProduct) <= available) {
             dispatch(addOrderProduct({
                 orderItem: {
                     name: productDetails?.name,
@@ -100,92 +108,89 @@ const ProductDetailsComponent = ({idProduct}) => {
 
     return (
         <Loading isLoading={isLoading}>
-            <Row style={{ padding: '16px', background: '#fff', borderRadius: '4px', height:'100%' }}>
-                <Col span={10} style={{ borderRight: '1px solid #e5e5e5', paddingRight: '8px' }}>
-                    <Image src={productDetails?.image} alt="image prodcut" preview={false} />
-                    <Row style={{ paddingTop: '10px', justifyContent: 'space-between' }}>
-                        <WrapperStyleColImage span={4} sty>
-                            <WrapperStyleImageSmall src={imageProductSmall} alt="image small" preview={false} />
-                        </WrapperStyleColImage>
-                        <WrapperStyleColImage span={4}>
-                            <WrapperStyleImageSmall src={imageProductSmall} alt="image small" preview={false} />
-                        </WrapperStyleColImage>
-
-                        <WrapperStyleColImage span={4}>
-                            <WrapperStyleImageSmall src={imageProductSmall} alt="image small" preview={false} />
-                        </WrapperStyleColImage>
-
-                        <WrapperStyleColImage span={4}>
-                            <WrapperStyleImageSmall src={imageProductSmall} alt="image small" preview={false} />
-                        </WrapperStyleColImage>
-
-                        <WrapperStyleColImage span={4}>
-                            <WrapperStyleImageSmall src={imageProductSmall} alt="image small" preview={false} />
-                        </WrapperStyleColImage>
-
-                        <WrapperStyleColImage span={4}>
-                            <WrapperStyleImageSmall src={imageProductSmall} alt="image small" preview={false} />
-                        </WrapperStyleColImage>
-
-                    </Row>
-                </Col>
-                <Col span={14} style={{ paddingLeft: '10px' }}>
-                    <WrapperStyleNameProduct>{productDetails?.name}</WrapperStyleNameProduct>
-                    <div>
-                        {productDetails?.numReviews > 0 ? (
-                            <>
-                                <Rate allowHalf disabled value={productDetails?.rating} />
-                                <WrapperStyleTextSell> | Đã bán {productDetails?.selled || 101}</WrapperStyleTextSell>
-                            </>
-                        ) : (
-                            <div style={{ color: '#6b7280' }}>Chưa có đánh giá</div>
-                        )}
-                    </div>
-                    <WrapperPriceProduct>
-                        <WrapperPriceTextProduct>{convertPrice(productDetails?.price)}</WrapperPriceTextProduct>
-                    </WrapperPriceProduct>
-                    {/* address removed to simplify UI */}
-                    <LikeButtonComponent
-                     dataHref={ process.env.REACT_APP_IS_LOCAL 
-                                ? "https://developers.facebook.com/docs/plugins/" 
-                                : window.location.href
-                            } 
-                    />
-                    <div style={{ margin: '10px 0 20px', padding: '10px 0', borderTop: '1px solid #e5e5e5', borderBottom: '1px solid #e5e5e5' }}>
-                        <div style={{ marginBottom: '10px' }}>Số lượng</div>
-                        <WrapperQualityProduct>
-                            <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('decrease',numProduct === 1)}>
-                                <MinusOutlined style={{ color: '#000', fontSize: '20px' }} />
-                            </button>
-                            <WrapperInputNumber onChange={onChange} defaultValue={1} max={productDetails?.countInStock} min={1} value={numProduct} size="small" />
-                            <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase',  numProduct === productDetails?.countInStock)}>
-                                <PlusOutlined style={{ color: '#000', fontSize: '20px' }} />
-                            </button>
-                        </WrapperQualityProduct>
-                    </div>
-                    <div style={{ display: 'flex', aliggItems: 'center', gap: '12px' }}>
-                        <div>
-                            <ButtonComponent
-                                size={40}
-                                styleButton={{
-                                    background: 'rgb(255, 57, 69)',
-                                    height: '48px',
-                                    width: '220px',
-                                    border: 'none',
-                                    borderRadius: '4px'
-                                }}
-                                onClick={handleAddOrderProduct}
-                                textbutton={'Thêm vào giỏ hàng'}
-                                styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
-                            ></ButtonComponent>
-                            {errorLimitOrder && <div style={{color: 'red'}}>Sản phẩm hết hàng</div>}
+            <div style={{ width: '100%' }}>
+                <div style={{ width: '100%' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '45% 55%', gap: 32, background: '#fff', borderRadius: 10, padding: 24, alignItems: 'start' }}>
+                        <div style={{ borderRight: '1px solid #f1f5f9', paddingRight: 8 }}>
+                            <Image src={mainImageSrc} alt="image product" preview={false} style={{ width: '100%', maxHeight: 340, objectFit: 'contain', display: 'block', margin: '0 auto' }} />
+                            {images.length > 1 && (
+                                <div style={{ paddingTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+                                    {images.map((img, idx) => (
+                                        <WrapperStyleImageSmall key={idx} src={img} alt={`thumb-${idx}`} preview={false} />
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                        
+                        <div style={{ paddingLeft: 8 }}>
+                            <WrapperStyleNameProduct>{productDetails?.name}</WrapperStyleNameProduct>
+                            {productDetails && (() => {
+                                const stock = productDetails?.countInStock ?? 0
+                                const inStock = stock > 0
+                                const lowStock = inStock && stock <= 5
+                                return (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, margin: '4px 0', fontSize: 13, lineHeight: '1.4', color: '#6b7280' }}>
+                                        <span style={{ color: inStock ? '#16a34a' : '#dc2626', fontWeight: 600 }}>{inStock ? 'Còn hàng' : 'Hết hàng'}</span>
+                                        <span style={{ color: '#6b7280' }}>|</span>
+                                        <span style={{ color: '#6b7280' }}>{lowStock ? `Chỉ còn ${stock} sản phẩm` : `Tồn kho: ${stock} sản phẩm`}</span>
+                                    </div>
+                                )
+                            })()}
+                            <div>
+                                {productDetails?.numReviews > 0 ? (
+                                    <>
+                                        <Rate allowHalf disabled value={productDetails?.rating} />
+                                        <WrapperStyleTextSell> | Đã bán {productDetails?.selled || 101}</WrapperStyleTextSell>
+                                    </>
+                                ) : (
+                                    <div style={{ color: '#6b7280' }}>Chưa có đánh giá</div>
+                                )}
+                            </div>
+                            <WrapperPriceProduct>
+                                <WrapperPriceTextProduct>{convertPrice(productDetails?.price)}</WrapperPriceTextProduct>
+                            </WrapperPriceProduct>
+                            <LikeButtonComponent
+                                dataHref={ process.env.REACT_APP_IS_LOCAL 
+                                            ? "https://developers.facebook.com/docs/plugins/" 
+                                            : window.location.href
+                                        } 
+                            />
+
+                            <div style={{ margin: '12px 0 18px', padding: '6px 0' }}>
+                                <div style={{ marginBottom: '8px', fontSize: 14, color: '#111' }}>Số lượng</div>
+                                <WrapperQualityProduct>
+                                    <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('decrease',numProduct === 1)}>
+                                        <MinusOutlined style={{ color: '#000', fontSize: '18px' }} />
+                                    </button>
+                                    <WrapperInputNumber onChange={onChange} defaultValue={1} max={productDetails?.countInStock} min={1} value={numProduct} size="small" />
+                                    <button style={{ border: 'none', background: 'transparent', cursor: 'pointer' }} onClick={() => handleChangeCount('increase',  numProduct === productDetails?.countInStock)}>
+                                        <PlusOutlined style={{ color: '#000', fontSize: '18px' }} />
+                                    </button>
+                                </WrapperQualityProduct>
+                            </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div>
+                                    <ButtonComponent
+                                        size={40}
+                                        styleButton={{
+                                            background: 'rgb(255, 57, 69)',
+                                            height: '48px',
+                                            width: '240px',
+                                            border: 'none',
+                                            borderRadius: '6px'
+                                        }}
+                                        onClick={handleAddOrderProduct}
+                                        disabled={(productDetails?.countInStock ?? 0) <= 0}
+                                        textbutton={(productDetails?.countInStock ?? 0) <= 0 ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
+                                        styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: 600 }}
+                                    ></ButtonComponent>
+                                    {errorLimitOrder && <div style={{color: 'red', marginTop: 8}}>Số lượng mua không được vượt quá tồn kho</div>}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </Col>
-            </Row >
             {/* Description section */}
-            <div style={{ width: '1270px', margin: '24px auto', background: '#fff', padding: 16, borderRadius: 4, lineHeight: 1.6 }}>
+            <div style={{ maxWidth: '1180px', width: '100%', margin: '24px auto', background: '#fff', padding: 16, borderRadius: 8, lineHeight: 1.6 }}>
                 <h3 style={{ marginBottom: 12 }}>Mô tả sản phẩm</h3>
                 <div style={{ color: '#111', whiteSpace: 'pre-wrap' }}>
                     {productDetails?.description && productDetails?.description.trim() !== '' ? (
@@ -197,7 +202,7 @@ const ProductDetailsComponent = ({idProduct}) => {
             </div>
 
             {/* Reviews section */}
-            <div style={{ width: '1270px', margin: '24px auto', background: '#fff', padding: 16, borderRadius: 4 }}>
+            <div style={{ maxWidth: '1180px', width: '100%', margin: '24px auto', background: '#fff', padding: 16, borderRadius: 8 }}>
                 <h3 style={{ marginBottom: 12 }}>Đánh giá sản phẩm</h3>
 
                 {productDetails?.numReviews > 0 ? (
@@ -266,7 +271,7 @@ const ProductDetailsComponent = ({idProduct}) => {
                 </div>
             </div>
 
-            <div style={{ width: '1270px', margin: '24px auto' }}>
+            <div style={{ maxWidth: '1180px', width: '100%', margin: '24px auto' }}>
                 <h3 style={{ marginBottom: 12 }}>Sản phẩm liên quan</h3>
                 <RelatedProducts type={productDetails?.type} currentId={productDetails?._id} />
             </div>
@@ -278,6 +283,8 @@ const ProductDetailsComponent = ({idProduct}) => {
                     } 
                     width="1270" 
                 />
+            </div>
+        </div>
         </Loading>
     )
 }

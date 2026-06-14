@@ -7,6 +7,7 @@ router.get('/get-all-order/:id',authUserMiddleWare, OrderController.getAllOrderD
 router.get('/get-details-order/:id', OrderController.getDetailsOrder)
 router.delete('/cancel-order/:id',authUserMiddleWare, OrderController.cancelOrderDetails)
 router.get('/get-all-order',authMiddleWare, OrderController.getAllOrder)
+router.get('/revenue-statistics', authMiddleWare, OrderController.revenueStatistics)
 router.post('/create', authUserLogin, OrderController.createOrder)
 router.post('/create-guest', OrderController.createGuestOrder)
 router.put('/update-status/:id', authMiddleWare, OrderController.updateOrderStatus)
