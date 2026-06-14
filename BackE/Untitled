@@ -1,0 +1,28 @@
+REACT_APP_API_URL=http://localhost:3001/api
+PORT=3001
+MongoDB=mongodb+srv://tinhlv219_db_user:ptitptit@dtshop.69g4k14.mongodb.net/dtshop?retryWrites=true&w=majority
+
+ACCESS_TOKEN=ChuoiBiMatAccessToken123
+REFRESH_TOKEN=ChuoiBiMatRefreshToken456
+# Gemini API Key for AI chatbot functionality
+GEMINI_API_KEY=AIzaSyDR-TRepODqUud9ZGOfzzdSb2u5yeCTUWQ
+
+# Other optional variables
+JWT_SECRET=++AIt2P7mSQkX2zsggL1r8wHQns3mMliCDf6PdDjUJM=
+
+BCRYPT_SALT_ROUNDS=10
+
+
+VNP_TMN_CODE=31YLPZ3I
+VNP_HASH_SECRET=86CEZX2NCAUJN1IVXLXI7S64VK2SI6TO
+VNP_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+
+VNP_RETURN_URL=http://localhost:3000/payment/vnpay-return
+VNP_IPN_URL=https://coveting-rocking-arbitrate.ngrok-free.dev/api/payment/vnpay-ipn
+
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USER=dtshop.noreply@gmail.com
+MAIL_PASS=ynjbfxsyaaykidop
+MAIL_FROM="DT Shop" <dtshop.noreply@gmail.com>
+FRONTEND_URL=http://localhost:3000
